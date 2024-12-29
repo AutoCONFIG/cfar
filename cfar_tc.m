@@ -1,4 +1,4 @@
-function [ index, XT, xc_tpn ] = cfar_tc( xc, xc_tp, N, pro_N, PAD)
+function [ index, XT ] = cfar_tc( xc, xc_tp, N, pro_N, PAD)
     %   假设回波服从高斯分布
     %
     xc_tc=zeros(1,length(xc));

@@ -27,7 +27,9 @@ function [index, XT] = cfar_cm(xc, N, pro_N, PFA)
         ref_cells_abs = abs(ref_cells);
 
         % 排序参考单元，去掉功率最高的 M 个单元
-        [sorted_ref, sorted_indices] = sort(ref_cells_abs, 'descend');
+        % 原本返回结果可用[sorted_ref, sorted_indices]接收
+        % 但sorted_indices在代码中并没有用到
+        [sorted_ref, ~] = sort(ref_cells_abs, 'descend');
         censored_ref = sorted_ref(M + 1 : end);
 
         % 计算剩余参考单元的平均功率作为干扰功率估计

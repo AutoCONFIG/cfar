@@ -51,38 +51,18 @@ smooth_window = 5;  % 例如使用5个点的平滑窗口
 xc_tp = zeros(1, shape(end));   % 此时 shape(end) 为 200
 xc_tp = xc_tp .* (1 - u) + xc .* u;
 
-% CFAR AC
-[ index, XT ] = cfar_ac( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR AC');
+[index_ac, XT_ac] = cfar_ac(xc, N, pro_N, PAD);
+[index_cm, XT_cm] = cfar_cm(xc, N, pro_N, PAD);
+[index_df, XT_df] = cfar_df(xc, N, pro_N, PAD);
+[index_go, XT_go] = cfar_go(xc, N, pro_N, PAD);
+[index_log, XT_log] = cfar_log(xc, N, pro_N, PAD);
+[index_os, XT_os] = cfar_os(abs(xc), N, k, pro_N, PAD);
+[index_sc, XT_sc] = cfar_sc(xc, N, pro_N, PAD);
+[index_so, XT_so] = cfar_so(xc, N, pro_N, PAD);
+[index_tc, XT_tc] = cfar_tc(xc, xc_tp, N, pro_N, PAD);
 
-% CFAR CM
-[ index, XT ] = cfar_cm( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR CM');
+algorithm_names = {'CFAR AC', 'CFAR CM', 'CFAR DF', 'CFAR GO', 'CFAR LOG', 'CFAR OS', 'CFAR SC', 'CFAR SO', 'CFAR TC'};
+XT_list = {XT_ac, XT_cm, XT_df, XT_go, XT_log, XT_os, XT_sc, XT_so, XT_tc};
+index_list = {index_ac, index_cm, index_df, index_go, index_log, index_os, index_sc, index_so, index_tc};
 
-% CFAR DF
-[ index, XT ] = cfar_df( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR DF');
-
-% CFAR GO
-[ index, XT ] = cfar_go( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR GO');
-
-% CFAR LOG
-[ index, XT ] = cfar_log( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR LOG');
-
-% CFAR OS
-[ index, XT ] = cfar_os( abs(xc), N, k, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR OS');
-
-% CFAR SC
-[ index, XT ] = cfar_sc( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR SC');
-
-% CFAR SO
-[ index, XT ] = cfar_so( xc, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR SO');
-
-% CFAR TC
-[ index, XT, xc_tpn ] = cfar_tc( xc, xc_tp, N, pro_N, PAD);
-plot_cfar(xc, XT, index, targets, N, 'CFAR TC');
+plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names);
