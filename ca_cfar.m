@@ -51,18 +51,47 @@ smooth_window = 5;  % 例如使用5个点的平滑窗口
 xc_tp = zeros(1, shape(end));   % 此时 shape(end) 为 200
 xc_tp = xc_tp .* (1 - u) + xc .* u;
 
+adjacent_window_size = 1;  % 设置相邻检测的窗口大小
+
 [index_ac, XT_ac] = cfar_ac(xc, N, pro_N, PAD);
 [index_cm, XT_cm] = cfar_cm(xc, N, pro_N, PAD);
 [index_df, XT_df] = cfar_df(xc, N, pro_N, PAD);
 [index_go, XT_go] = cfar_go(xc, N, pro_N, PAD);
-[index_log, XT_log] = cfar_log(xc, N, pro_N, PAD);
+[index_lg, XT_lg] = cfar_lg(xc, N, pro_N, PAD);
 [index_os, XT_os] = cfar_os(abs(xc), N, k, pro_N, PAD);
 [index_sc, XT_sc] = cfar_sc(xc, N, pro_N, PAD);
 [index_so, XT_so] = cfar_so(xc, N, pro_N, PAD);
 [index_tc, XT_tc] = cfar_tc(xc, xc_tp, N, pro_N, PAD);
 
 algorithm_names = {'CFAR AC', 'CFAR CM', 'CFAR DF', 'CFAR GO', 'CFAR LOG', 'CFAR OS', 'CFAR SC', 'CFAR SO', 'CFAR TC'};
-XT_list = {XT_ac, XT_cm, XT_df, XT_go, XT_log, XT_os, XT_sc, XT_so, XT_tc};
-index_list = {index_ac, index_cm, index_df, index_go, index_log, index_os, index_sc, index_so, index_tc};
+XT_list = {XT_ac, XT_cm, XT_df, XT_go, XT_lg, XT_os, XT_sc, XT_so, XT_tc};
+index_list = {index_ac, index_cm, index_df, index_go, index_lg, index_os, index_sc, index_so, index_tc};
 
-plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names);
+TDR_list = [];
+FAR_list = [];
+true_detections_list = [];
+false_alarms_list = [];
+false_alarm_positions_list = [];
+
+for i = 1:length(algorithm_names)
+    disp(['评估算法：', algorithm_names{i}]);
+    
+    [TDR, FAR, true_detections, false_alarms, false_alarm_positions] = perf_cfar(xc, XT_list{i}, index_list{i}, cell2mat(targets(:, 1)), adjacent_window_size);
+    
+    % 存储评估结果
+    TDR_list = [TDR_list, TDR];
+    FAR_list = [FAR_list, FAR];
+    true_detections_list = [true_detections_list, true_detections];
+    false_alarms_list = [false_alarms_list, false_alarms];
+    false_alarm_positions_list = [false_alarm_positions_list, {false_alarm_positions}];  % 存储虚警位置
+    
+    disp(['-----------------------------------------']);
+    disp(['真检测率 (TDR): ', num2str(TDR)]);
+    disp(['虚警率 (FAR): ', num2str(FAR)]);
+    disp(['真检测目标数: ', num2str(true_detections)]);
+    disp(['虚警目标数: ', num2str(false_alarms)]);
+    disp(['-----------------------------------------']);
+end
+
+% 绘制包含性能评估信息的CFAR结果图
+plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names, TDR_list, FAR_list, true_detections_list, false_alarms_list, false_alarm_positions_list);
