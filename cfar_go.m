@@ -1,18 +1,50 @@
-%%  最大选择恒虚警算法
+%% 最大选择恒虚警算法（GO-CFAR）
+% 功能：该函数实现了最大选择恒虚警（Greatest Of CFAR, GO-CFAR）算法，常用于信号检测。
+% GO-CFAR算法通过选取参考单元左侧和右侧信号的均值中的最大值作为背景噪声估计，并根据此估计值计算目标检测阈值。
+%
+% 输入参数：
+%   - xc          : 输入回波信号，是待检测的信号（1xM的向量）。
+%   - N           : 用于计算背景噪声的邻域窗口大小，即参考单元的总数（包括测试单元两侧的邻域单元数目）。
+%   - pro_N       : 扩展邻域的大小，确保参考单元的范围能够包含足够的背景信息。
+%   - PAD         : 虚警概率的影响因子，控制动态调整因子的计算。
+%
+% 输出参数：
+%   - index       : 目标检测的有效索引范围，指示哪些位置需要计算目标检测阈值。
+%   - XT          : 计算出的目标检测阈值，基于背景噪声的估计值（最大值）与动态调整因子alpha的乘积。
+%
+% 公式说明：
+%   - alpha 是动态调整因子，基于参考单元数量 N 和虚警概率 PAD 进行计算：
+%     \[
+%     \alpha = N \cdot \left(PAD^{\left(-\frac{1}{N}\right)} - 1\right)
+%     \]
+%   - 背景噪声的估计通过对参考单元的均值进行计算，选择左侧和右侧的均值中的最大值作为噪声功率估计：
+%     \[
+%     Z = \max\left(\text{mean}(\text{cell\_left}), \text{mean}(\text{cell\_right})\right)
+%     \]
+%   - 目标检测的阈值为最大值背景噪声估计与 alpha 的乘积：
+%     \[
+%     \text{threshold} = Z \cdot \alpha
+%     \]
+
 function [ index, XT ] = cfar_go(xc, N, pro_N, PAD)
-    %   假设回波服从高斯分布
-    %   alpha赋值有些问题，一个比较复杂的高次函数
-    alpha = N.*(PAD.^(-1./N)-1);
+    % 计算动态调整因子 alpha，基于虚警概率和参考单元数量
+    alpha = N * (PAD.^(-1./N) - 1);
 
-    index = 1+N/2+pro_N/2:length(xc)-N/2-pro_N/2;
-    XT = zeros(1,length(index));
+    % 定义有效索引范围，确保在信号的有效范围内进行计算
+    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    % 初始化目标检测阈值数组
+    XT = zeros(1, length(index));
 
+    % 对每个有效索引位置 i 进行 GO-CFAR 检测
     for i = index
-        cell_left = xc(1,i-N/2-pro_N/2:i-pro_N/2-1);
-        cell_right = xc(1,i+pro_N/2+1:i+N/2+pro_N/2);
-        Z = max([mean(cell_left),mean(cell_right)]);
-        
-        XT(1,i-N/2-pro_N/2) = Z.*alpha;
-    end
+        % 获取左边邻域和右边邻域的信号
+        cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
+        cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
 
+        % 计算左侧和右侧邻域的均值
+        Z = max([mean(cell_left), mean(cell_right)]);
+
+        % 计算目标检测的阈值
+        XT(1, i - N / 2 - pro_N / 2) = Z * alpha;
+    end
 end

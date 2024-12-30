@@ -1,16 +1,22 @@
-function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names, TDR_list, FAR_list, true_detections_list, false_alarms_list, false_alarm_positions_list)
-    % xc: 原始信号数据
-    % XT_list: 存储所有算法的检测结果（每个算法的 XT）
-    % index_list: 存储所有算法的检测位置索引（每个算法的 index）
-    % targets: 包含目标位置和颜色的数组
-    % N: 滤波器窗口大小
-    % algorithm_names: 存储算法名称的单元格数组
-    % TDR_list: 存储每个算法的真检测率列表
-    % FAR_list: 存储每个算法的虚警率列表
-    % true_detections_list: 存储每个算法的真检测目标数列表
-    % false_alarms_list: 存储每个算法的虚警目标数列表
-    % false_alarm_positions_list: 存储每个算法的虚警位置列表（每个算法一个虚警位置数组）
+%% plot_cfar_subplots - 绘制多个算法的 CFAR 检测结果和性能指标
+% 
+% 输入参数：
+%   - xc                     : 原始信号数据。
+%   - XT_list                : 存储所有算法的检测结果，每个算法的 XT（阈值）。
+%   - index_list             : 存储所有算法的检测位置索引，每个算法对应一个 index。
+%   - targets                : 包含目标位置和颜色的数组，指示信号中的目标位置。
+%   - N                      : 滤波器窗口大小，用于控制 CFAR 滑动窗口的大小。
+%   - algorithm_names        : 存储各个算法名称的单元格数组。
+%   - TDR_list               : 存储每个算法的真检测率（True Detection Rate）列表。
+%   - FAR_list               : 存储每个算法的虚警率（False Alarm Rate）列表。
+%   - true_detections_list   : 存储每个算法的真检测目标数列表。
+%   - false_alarms_list      : 存储每个算法的虚警目标数列表。
+%   - false_alarm_positions_list : 存储每个算法的虚警位置列表（每个算法一个虚警位置数组）。
+% 
+% 输出：
+%   该函数将绘制一个包含多个子图的图形，展示每个算法的检测结果、性能指标以及虚警位置。
 
+function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names, TDR_list, FAR_list, true_detections_list, false_alarms_list, false_alarm_positions_list)
     % 子图的数量
     num_algorithms = length(algorithm_names);
     
@@ -56,7 +62,7 @@ function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names
         
         % 设置图例
         lgd = legend('show');
-        lgd.Location = 'best';
+        lgd.Location = 'southeast';
         lgd.NumColumns = 2;
         set(lgd, 'Box', 'on');
         
@@ -64,7 +70,7 @@ function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names
         set(gcf, 'DefaultTextFontName', '思源黑体');
         
         % 设置标题和坐标轴标签
-        title([algorithm_name ' 算法检测 (滤波器窗口大小 = ' num2str(N) ')']);
+        title([algorithm_name ' 算法检测 (参考单元的滑窗大小 = ' num2str(N) ')']);
         xlabel('目标位置');
         ylabel('信号强度 (dB)');
         grid on;
@@ -73,8 +79,8 @@ function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names
         hold on;
         
         % 选择一个适合的位置来显示性能指标
-        x_position = 0.05;  % x坐标，表示在图形的5%位置，靠近左侧
-        y_position = 0.05;  % y坐标，表示从底部开始的5%位置
+        x_position = 0.01;  % x坐标，表示在图形的5%位置，靠近左侧
+        y_position = 0.01;  % y坐标，表示从底部开始的5%位置
         
         % 性能指标文本
         performance_text = {
