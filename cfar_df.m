@@ -40,10 +40,8 @@ function [ index, XT ] = cfar_df(xc, N, pro_N, PAD)
         % 获取左边邻域和右边邻域的信号
         cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
         cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
-
         % 将左侧和右侧的参考单元信号合并
         cell_all = [cell_left, cell_right];
-
         % 对合并后的信号进行排序
         sorted_cells = sort(cell_all);
 

@@ -24,7 +24,7 @@ function plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names
     figure;
     
     % 使用 tiledlayout 来调整子图的布局
-    t = tiledlayout(3, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact'); % 设置3x3网格布局
+    tiledlayout(3, 3, 'TileSpacing', 'Compact', 'Padding', 'Compact'); % 设置3x3网格布局
 
     for i = 1:num_algorithms
         % 每个算法的检测结果

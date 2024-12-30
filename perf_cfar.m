@@ -59,7 +59,4 @@ function [TDR, FAR, true_detections, false_alarms, false_alarm_positions] = perf
     TDR = true_detections / total_targets;  % 真检测率
     FAR = false_alarms / length(index);     % 虚警率
 
-    % 输出最终的TDR和FAR
-    disp(['真检测率 (TDR): ', num2str(TDR)]);
-    disp(['虚警率 (FAR): ', num2str(FAR)]);
 end

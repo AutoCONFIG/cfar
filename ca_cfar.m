@@ -2,7 +2,7 @@
 clc; clear all; close all;
 
 %% 均匀背景噪声（单目标&多目标）
-variance = 120; % 方差，以便得到白噪声
+variance = 150; % 方差，以便得到白噪声
 show_out = 0;   % 是否显示图形（0表示不显示）
 
 choice = 0;     % 用户选择的噪声类型：0代表边缘背景噪声，1代表均匀背景噪声
@@ -64,7 +64,7 @@ xc_tp = zeros(1, shape(end));           % `xc_tp` 是上一时刻的信号数据
 
 xc_tp = xc_tp .* (1 - u) + xc .* u;     % 加权平滑：`u` 控制当前时刻和前一时刻信号的融合程度
 
-% 调用对应的CFAR算法，得出CFAR检测阈值结果
+%% 调用对应的CFAR算法，得出CFAR检测阈值结果
 [index_ac, XT_ac] = cfar_ac(xc, N, pro_N, PAD);
 [index_cm, XT_cm] = cfar_cm(xc, N, pro_N, PAD);
 [index_df, XT_df] = cfar_df(xc, N, pro_N, PAD);
@@ -75,12 +75,12 @@ xc_tp = xc_tp .* (1 - u) + xc .* u;     % 加权平滑：`u` 控制当前时刻�
 [index_so, XT_so] = cfar_so(xc, N, pro_N, PAD);
 [index_tc, XT_tc] = cfar_tc(xc, xc_tp, N, pro_N, PAD);
 
-%% 算法名称列表、CFAR阈值列表，CFAR阈值对应索引列表
-% 以便于统一绘图
+% 算法名称列表、CFAR阈值列表，CFAR阈值对应索引列表，以便于统一绘图
 algorithm_names = {'CFAR AC', 'CFAR CM', 'CFAR DF', 'CFAR GO', 'CFAR LOG', 'CFAR OS', 'CFAR SC', 'CFAR SO', 'CFAR TC'};
 XT_list = {XT_ac, XT_cm, XT_df, XT_go, XT_lg, XT_os, XT_sc, XT_so, XT_tc};
 index_list = {index_ac, index_cm, index_df, index_go, index_lg, index_os, index_sc, index_so, index_tc};
 
+%% CFAR算法性能指标评估
 adjacent_window_size = 1;  % 设置相邻检测的窗口大小，防止检测虚警时多重标记
 
 % 预分配存储空间以提升下面for遍历性能
@@ -92,6 +92,7 @@ false_alarms_list = zeros(1, num_algorithms);  % 预分配false_alarms_list大�
 false_alarm_positions_list = cell(1, num_algorithms);  % 预分配cell数组
 
 for i = 1:num_algorithms  % 遍历所有算法
+    disp('-----------------------------------------');
     disp(['评估算法：', algorithm_names{i}]);
     
     % 调用perf_cfar函数评估性能
@@ -105,7 +106,6 @@ for i = 1:num_algorithms  % 遍历所有算法
     false_alarms_list(i) = false_alarms;        % 虚警目标数
     false_alarm_positions_list{i} = false_alarm_positions;  % 存储虚警位置，以便在图像中标明虚警点
     
-    disp('-----------------------------------------');
     disp(['真检测率 (TDR): ', num2str(TDR)]);
     disp(['虚警率 (FAR): ', num2str(FAR)]);
     disp(['真检测目标数: ', num2str(true_detections)]);
@@ -114,4 +114,5 @@ for i = 1:num_algorithms  % 遍历所有算法
 end
 
 %% 绘制包含性能评估信息的CFAR结果图
-plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names, TDR_list, FAR_list, true_detections_list, false_alarms_list, false_alarm_positions_list);
+plot_cfar_subplots(xc, XT_list, index_list, targets, N, algorithm_names, TDR_list, FAR_list, ...
+                   true_detections_list, false_alarms_list, false_alarm_positions_list);

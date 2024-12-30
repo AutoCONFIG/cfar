@@ -46,21 +46,17 @@ function [index, XT] = cfar_cm(xc, N, pro_N, PFA)
 
         % 合并左侧和右侧的参考单元
         ref_cells = [cell_left, cell_right];
-
         % 对参考单元取绝对值，假设信号可能包含负值
         ref_cells_abs = abs(ref_cells);
-
         % 排序参考单元，剔除功率最高的 M 个单元
-        % 返回排序后的参考单元（sorted_ref），这里我们不使用排序的索引（sorted_indices）
+        % 返回排序后的参考单元（sorted_ref），这里我们不使用排序的索引（sorted_indices），故改成~
         [sorted_ref, ~] = sort(ref_cells_abs, 'descend');
         censored_ref = sorted_ref(M + 1 : end);
 
         % 计算剩余参考单元的平均功率作为背景噪声功率估计
         sigma_w2_hat = mean(censored_ref);
-
         % 计算目标检测的阈值
         threshold = sigma_w2_hat * alpha;
-
         % 将计算得到的阈值赋值给 XT 数组
         XT(1, i - N / 2 - pro_N / 2) = threshold;
     end

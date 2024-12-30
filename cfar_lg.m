@@ -50,7 +50,6 @@ function [ index, XT ] = cfar_lg(xc, N, pro_N, PAD)
         % 对左侧和右侧邻域信号取对数，避免取对数零时加上小常数eps
         log_cell_left = log10(cell_left + eps);  % 加上 eps 避免对数零的情况
         log_cell_right = log10(cell_right + eps);
-        
         % 计算左侧和右侧对数信号的均值
         log_mean_left = mean(log_cell_left);
         log_mean_right = mean(log_cell_right);
