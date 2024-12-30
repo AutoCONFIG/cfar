@@ -31,15 +31,15 @@ function [ index, XT ] = cfar_df(xc, N, pro_N, PAD)
     alpha = N * (PAD.^(-1./N) - 1);
 
     % 定义有效索引范围，确保在信号的有效范围内进行计算
-    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    index = 1 + N/2 + pro_N/2 : length(xc) - N/2 - pro_N/2;
     % 初始化目标检测阈值数组
     XT = zeros(1, length(index));
 
     % 对每个有效索引位置 i 进行 DF-CFAR 检测
     for i = index
         % 获取左边邻域和右边邻域的信号
-        cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
-        cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
+        cell_left = xc(1, i - N/2 - pro_N/2 : i - pro_N/2 - 1);
+        cell_right = xc(1, i + pro_N/2 + 1 : i + N/2 + pro_N/2);
         % 将左侧和右侧的参考单元信号合并
         cell_all = [cell_left, cell_right];
         % 对合并后的信号进行排序
@@ -49,6 +49,6 @@ function [ index, XT ] = cfar_df(xc, N, pro_N, PAD)
         Z = sorted_cells(floor(length(sorted_cells) / 2));
 
         % 计算目标检测的阈值
-        XT(1, i - N / 2 - pro_N / 2) = Z * alpha;
+        XT(1, i - N/2 - pro_N/2) = Z * alpha;
     end
 end

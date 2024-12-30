@@ -35,16 +35,16 @@ function [ index, XT ] = cfar_sc(xc, N, pro_N, PAD)
     alpha = N * (PAD.^(-1./N) - 1);
 
     % 定义有效索引范围，确保在信号的有效范围内进行计算
-    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    index = 1 + N/2 + pro_N/2 : length(xc) - N/2 - pro_N/2;
     % 初始化目标检测阈值数组
     XT = zeros(1, length(index));
 
     % 对每个有效索引位置 i 进行 S-CFAR 检测
     for i = index
         % 获取左侧邻域的参考单元信号
-        cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
+        cell_left = xc(1, i - N/2 - pro_N/2 : i - pro_N/2 - 1);
         % 获取右侧邻域的参考单元信号
-        cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
+        cell_right = xc(1, i + pro_N/2 + 1 : i + N/2 + pro_N/2);
         
         % 获取左侧和右侧邻域信号中的最小值
         Z_left = min(cell_left);
@@ -54,6 +54,6 @@ function [ index, XT ] = cfar_sc(xc, N, pro_N, PAD)
         Z = min(Z_left, Z_right);
         
         % 计算目标检测阈值，乘以 alpha 进行调整
-        XT(1, i - N / 2 - pro_N / 2) = abs(Z * alpha);
+        XT(1, i - N/2 - pro_N/2) = abs(Z * alpha);
     end
 end

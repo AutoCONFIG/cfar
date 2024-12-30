@@ -37,15 +37,15 @@ function [ index, XT ] = cfar_lg(xc, N, pro_N, PAD)
     alpha = N * (PAD.^(-1./N) - 1);
 
     % 定义有效索引范围，确保在信号的有效范围内进行计算
-    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    index = 1 + N/2 + pro_N/2 : length(xc) - N/2 - pro_N/2;
     % 初始化目标检测阈值数组
     XT = zeros(1, length(index));
 
     % 对每个有效索引位置 i 进行 Log-CFAR 检测
     for i = index
         % 获取左边邻域和右边邻域的信号
-        cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
-        cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
+        cell_left = xc(1, i - N/2 - pro_N/2 : i - pro_N/2 - 1);
+        cell_right = xc(1, i + pro_N/2 + 1 : i + N/2 + pro_N/2);
         
         % 对左侧和右侧邻域信号取对数，避免取对数零时加上小常数eps
         log_cell_left = log10(cell_left + eps);  % 加上 eps 避免对数零的情况
@@ -58,6 +58,6 @@ function [ index, XT ] = cfar_lg(xc, N, pro_N, PAD)
         Z_log = (log_mean_left + log_mean_right) / 2;
         
         % 计算目标检测阈值，转换回原来的尺度
-        XT(1, i - N / 2 - pro_N / 2) = real(10^(Z_log) * alpha); % 转换回原始尺度并确保为实数
+        XT(1, i - N/2 - pro_N/2) = real(10^(Z_log) * alpha); % 转换回原始尺度并确保为实数
     end
 end

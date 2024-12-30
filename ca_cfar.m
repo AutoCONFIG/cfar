@@ -17,7 +17,7 @@ elseif choice == 1 % 均匀背景高斯白噪声
     noise_p  = 10.^(noise_db./10);  % 将功率dB转换为线性幅度，便于调用噪声函数生成噪声
     [ xc ]   = env_uniform(variance,  shape, noise_db,show_out); % 调用env_uniform函数生成噪声
 else
-    disp('输入有误，请输入 0 或者  进行正确选择。');
+    disp('输入有误，请输入 0 或者 1 进行正确选择。');
 end
 
 %% 多目标设置
@@ -56,7 +56,7 @@ N     = 36;         % 背景噪声窗口大小，控制背景噪声估计时参�
 pro_N = 10;         % 背景噪声窗口的边界单元数，指定窗口两侧需要去掉的单元数
 PAD   = 10^(-4);    % 虚警概率（PFA，Probability of False Alarm），用于调整背景噪声估计的阈值
 k     = 2.*N./4;    % 在有序统计量中，选择背景噪声窗口中第 `k` 小的元素作为估计背景噪声，
-                    % 选择 k = N / 2 是为了平衡在背景噪声估计时忽略极端的高值，而又不过于严格地限制了选择的范围
+                    % 选择 k = N/2 是为了平衡在背景噪声估计时忽略极端的高值，而又不过于严格地限制了选择的范围
 
 u     = 0.001;      % 加权系数，用于控制当前信号和历史信号的融合比例
 xc_tp = zeros(1, shape(end));           % `xc_tp` 是上一时刻的信号数据，用于时序数据的平滑。
@@ -83,7 +83,7 @@ index_list = {index_ac, index_cm, index_df, index_go, index_lg, index_os, index_
 %% CFAR算法性能指标评估
 adjacent_window_size = 1;  % 设置相邻检测的窗口大小，防止检测虚警时多重标记
 
-% 预分配存储空间以提升下面for遍历性能
+% 预分配内存空间以提升下面for遍历性能
 num_algorithms = length(algorithm_names);   % 获取算法种类的长度，以便于预分配内存大小
 TDR_list = zeros(1, num_algorithms);        % 预分配TDR_list大小
 FAR_list = zeros(1, num_algorithms);        % 预分配FAR_list大小

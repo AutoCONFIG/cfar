@@ -31,7 +31,7 @@ function [index, XT] = cfar_cm(xc, N, pro_N, PFA)
     alpha = N * ((PFA)^(-1 / N) - 1);
 
     % 预定义有效索引范围，从 N/2 + pro_N/2 到信号的末尾，避免越界
-    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    index = 1 + N/2 + pro_N/2 : length(xc) - N/2 - pro_N/2;
     % 初始化阈值数组
     XT = zeros(1, length(index));
 
@@ -41,8 +41,8 @@ function [index, XT] = cfar_cm(xc, N, pro_N, PFA)
     % 对每个有效索引位置 i 进行CFAR检测
     for i = index
         % 获取左侧和右侧的参考单元（去除测试单元）
-        cell_left = xc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
-        cell_right = xc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
+        cell_left = xc(1, i - N/2 - pro_N/2 : i - pro_N/2 - 1);
+        cell_right = xc(1, i + pro_N/2 + 1 : i + N/2 + pro_N/2);
 
         % 合并左侧和右侧的参考单元
         ref_cells = [cell_left, cell_right];
@@ -58,6 +58,6 @@ function [index, XT] = cfar_cm(xc, N, pro_N, PFA)
         % 计算目标检测的阈值
         threshold = sigma_w2_hat * alpha;
         % 将计算得到的阈值赋值给 XT 数组
-        XT(1, i - N / 2 - pro_N / 2) = threshold;
+        XT(1, i - N/2 - pro_N/2) = threshold;
     end
 end

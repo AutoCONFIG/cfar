@@ -47,21 +47,21 @@ function [ index, XT ] = cfar_tc(xc, xc_tp, N, pro_N, PAD)
     xc_tc(1, end) = xc_tpn(1, end);
 
     % 定义目标检测的有效索引范围
-    index = 1 + N / 2 + pro_N / 2 : length(xc) - N / 2 - pro_N / 2;
+    index = 1 + N/2 + pro_N/2 : length(xc) - N/2 - pro_N/2;
     % 初始化目标检测阈值数组
     XT = zeros(1, length(index));
 
     % 对每个有效索引位置 i 进行 TC-CFAR 检测
     for i = index
         % 获取左侧邻域的参考单元信号
-        cell_left = xc_tc(1, i - N / 2 - pro_N / 2 : i - pro_N / 2 - 1);
+        cell_left = xc_tc(1, i - N/2 - pro_N/2 : i - pro_N/2 - 1);
         % 获取右侧邻域的参考单元信号
-        cell_right = xc_tc(1, i + pro_N / 2 + 1 : i + N / 2 + pro_N / 2);
+        cell_right = xc_tc(1, i + pro_N/2 + 1 : i + N/2 + pro_N/2);
         
         % 计算背景噪声估计为左侧和右侧邻域的信号之和的均值
         Z = (sum(cell_left) + sum(cell_right)) / N;
         
         % 计算目标检测阈值，乘以 alpha 进行调整
-        XT(1, i - N / 2 - pro_N / 2) = Z * alpha;
+        XT(1, i - N/2 - pro_N/2) = Z * alpha;
     end
 end
